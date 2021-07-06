@@ -12,16 +12,55 @@
 	</div>
 	<div class="calculator__keyboard">
 	   <button class="calculator__actions" v-on:click="result = operand1 + operand2">+</button>
-	   <button class="calculator__actions" v-on:click="result = operand1 - operand2">-</button>
-	   <!-- +++1.1. Способ №1 Целочисленное деление. Применение округления частного-->
-	   <!-- <button class="calculator__actions" @click="result = Math.floor(operand1 / operand2)">/</button> -->
-	   <!-- ---1.1. Способ №1 Целочисленное деление. Применение округления частного-->
-	   <!-- +++2.1. Способ №2 Целочисленное деление. Применение округления частного в методе integerDivision -->
+	   <button class="calculator__actions" v-on:click="result = operand1 - operand2">-</button>	   
 	   <button class="calculator__actions" @click="integerDivision">/</button>
-	   <!-- +++2.2. Способ №2 Целочисленное деление. Применение округления частного в методе integerDivision -->
 	   <button class="calculator__actions" @click="result = operand1 * operand2">*</button>
 	   <button class="calculator__actions" @click="result = operand1 ** operand2">^</button>
-	 </div>
+	</div>
+	<label class="screenKeyboard__btnShowHide">
+		<input class="screenKeyboard__checkbox" type="checkbox" v-model="screenKeyboard"/>
+		Отобразить экранную клавиатуру
+	</label>
+	<div class="screenKeyboard" v-if="screenKeyboard">
+		<div v-if="selectedOperand == 1">
+			<button class="screenKeyboard__btn1" v-for="(item,idx) in numbers" :key="idx" 
+				@click="operand1 += ''+item; 
+				operand1 = Number(operand1.replace(/^0+/, ''));
+			">
+				{{item}}
+			</button>
+			<button class="screenKeyboard__btn1"
+				@click="operand1 += ''; 
+				operand1 = Number(operand1.replace(/[0-9]$/, ''));
+			">
+				&larr;
+			</button>
+		</div>
+		<div v-else-if="selectedOperand == 2">
+			<button class="screenKeyboard__btn1" v-for="(item,idx) in numbers" :key="idx" 
+				@click="operand2 += ''+item; 
+				operand2 = Number(operand2.replace(/^0+/, ''));
+			">
+				{{item}}
+			</button>
+			<button class="screenKeyboard__btn1"
+				@click="operand2 += ''; 
+				operand2 = Number(operand2.replace(/[0-9]$/, ''));
+			">
+				&larr;
+			</button>
+		</div>
+		<div class="screenKeyboard__operands">
+			<label class="screenKeyboard__operand">
+				<input class="screenKeyboard__radio" name="screenKeyboard__operands" type="radio" value="1" checked v-model="selectedOperand"/>
+				Операнд 1
+			</label>
+			<label class="screenKeyboard__operand">
+				<input class="screenKeyboard__radio" name="screenKeyboard__operands" type="radio" value="2" v-model="selectedOperand"/>
+				Операнд 2
+			</label>
+		</div>
+	</div>	 
   </div>
 </template>
 
@@ -32,6 +71,9 @@
        return {
            operand1: 0,
            operand2: 0,
+		   screenKeyboard: false,
+		   selectedOperand: 1,
+		   numbers: [0,1,2,3,4,5,6,7,8,9],
 		   result: 0,
        }
    },
@@ -81,6 +123,19 @@
 		width:44px;
 		text-align:center;
 		margin:0 15px 15px;
+		padding:5px;
+		font-size:30px;
+		background:#000;
+		color:#fff;
+		border:0;
+		border-radius:0;
+	}
+
+	.screenKeyboard__btn1{
+		cursor:pointer;
+		width:44px;
+		text-align:center;
+		margin:15px 5px;
 		padding:5px;
 		font-size:30px;
 		background:#000;
