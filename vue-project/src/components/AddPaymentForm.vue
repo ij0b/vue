@@ -1,5 +1,6 @@
 <template>
   <div class="addPaymentForm__container">
+    <div class="addPaymentForm__bg" @click="closeForm"></div>
     <div class="addPaymentForm__btn" @click="openForm">
       ADD NEW COST
       <span class="addPaymentForm__plus">
@@ -7,10 +8,21 @@
       </span>
     </div>
     <div class="addPaymentForm">
-      <input placeholder="Date" v-model="date" />
-      <input placeholder="Category" v-model="category" />
-      <input placeholder="Value" v-model="value" />
-      <button @click="onSaveClick">Save!</button>
+      <div class="addPaymentForm__closeForm" @click="closeForm">
+        X
+      </div>
+      <div class="addPaymentForm__caption">
+        Добавить новый расход
+      </div>
+      <input class="addPaymentForm__field" placeholder="Date" v-model="date" />
+      <input class="addPaymentForm__field" placeholder="Category" v-model="category" />
+      <input class="addPaymentForm__field" placeholder="Value" v-model="value" />
+      <button class="addPaymentForm__add" @click="onSaveClick">
+        ADD
+        <span class="addPaymentForm__plus">
+        +
+        </span>
+      </button>
     </div>
   </div>
 </template>
@@ -44,7 +56,10 @@ export default {
       this.$emit('addNewPayment', data)
     },
     openForm () {
-      document.querySelector('.addPaymentForm').classList.add('act');
+      document.querySelector('.addPaymentForm__container').classList.add('act');
+    },
+    closeForm () {
+      document.querySelector('.addPaymentForm__container').classList.remove('act');
     }
   }
 
@@ -53,8 +68,21 @@ export default {
 
 <style scoped>
 
-.addPaymentForm__contaner{
+.addPaymentForm__container{
 
+}
+.addPaymentForm__container.act .addPaymentForm__bg{
+  display:block;
+}
+.addPaymentForm__bg{
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.5);
+  z-index:20;
 }
 .addPaymentForm__btn{
   background:#25A79A;
@@ -69,20 +97,53 @@ export default {
 }
 .addPaymentForm{
   display:none;
-  box-shadow:0 0 5px rgba(0,0,0,0.5);
   padding:25px;
   position:fixed;
   top:0;
   bottom:0;
   left:0;
   right:0;
+  z-index:25;
   margin:auto;
   width:300px;
   height:300px;
+  background:#fff;
+  box-sizing:border-box;
+  text-align:center;
 }
-.addPaymentForm.act{
+.addPaymentForm__container.act .addPaymentForm{
   display:block;
 }
-
+.addPaymentForm__add{
+  background:#25A79A;
+  padding:10px 15px;
+  color:#fff;
+  display:inline-block;
+  margin:0 0 15px;
+  box-shadow:0 0 5px rgba(0,0,0,0.5);
+  border:0;
+}
+.addPaymentForm__field{
+  padding:15px;
+  box-shadow:0 0 5px rgba(0,0,0,0.5);
+  width:100%;
+  margin:0 0 15px;
+  box-sizing:border-box;
+  border:0;
+}
+.addPaymentForm__caption{
+  font-size:18px;
+  margin:0 0 15px;
+  font-weight:700;  
+}
+.addPaymentForm__closeForm{
+  margin:-35px -35px 0 auto;
+  width:30px;
+  height:30px;
+  color:#fff;
+  background:#000;
+  border-radius:50%;
+  line-height:30px;
+}
 
 </style>
