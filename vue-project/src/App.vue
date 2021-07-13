@@ -14,6 +14,7 @@
 
 import AddPaymentForm from './components/AddPaymentForm'
 import PaymentsDisplay from './components/PaymentsDisplay'
+import { mapMutations, mapActions, mapGetters } from 'vuex'
  
 export default {
   name: "App",
@@ -23,34 +24,37 @@ export default {
   },
   data: () => ({
     paymentsList: [],
+    selected: ''
   }),
   methods: {
-    fetchData () {
-      return [
-      {
-        date: '28.03.2020',
-        category: 'Food',
-        value: 169,
-      },
-      {
-        date: '24.03.2020',
-        category: 'Transport',
-        value: 360,
-      },
-      {
-        date: '24.03.2020',
-        category: 'Food',
-        value: 532,
-      },
-      ]
-    },
+     ...mapMutations([
+      'setPaymentsListData',
+    ]),
     addNewPayment (data) {
       this.paymentsList = [...this.paymentsList, data]
-    }
+    },
   },
   created () {
-    this.paymentsList = this.fetchData()
+    //this.paymentsList = this.fetchData()
+    //this.$store.commit(setPaymentsListData', this.fetchData())
+    this.setPaymentsListData(this.fetchData())
   },
+  computed: {
+   ...mapGetters([
+     'getCategoryList'
+   ])
+  },
+  actions: {
+    ...mapActions([
+      'fetchData',
+      'loadCategories'
+    ])
+  },
+  mounted () {
+    if (!this.getCategoryList.length) {
+      this.loadCategories()
+    }
+  }
 }
 
 </script>

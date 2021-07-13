@@ -15,7 +15,12 @@
         Добавить новый расход
       </div>
       <input class="addPaymentForm__field" placeholder="Date" v-model="date" />
-      <input class="addPaymentForm__field" placeholder="Category" v-model="category" />
+      <!--<input class="addPaymentForm__field" placeholder="Category" v-model="category" />-->
+      <select v-model="selected">
+        <option v-for="(option,idx) in getCategoryList" :value="option" :key="idx">
+          {{ option }}
+        </option>
+      </select>
       <input class="addPaymentForm__field" placeholder="Value" v-model="value" />
       <button class="addPaymentForm__add" @click="onSaveClick">
         ADD
@@ -28,6 +33,8 @@
 </template>
  
 <script>
+import { mapMutations } from 'vuex'
+
 export default {
   data () {
     return {
@@ -37,6 +44,9 @@ export default {
     }
   },
   computed: {
+    ...mapMutations([
+      'setPaymentsListData',
+    ]),
     getCurrentDate () {
       const today = new Date();
       const d = today.getDate()
@@ -53,7 +63,8 @@ export default {
         category,
         value
       }
-      this.$emit('addNewPayment', data)
+      //this.$emit('addNewPayment', data)
+      this.commit('setPaymentsListData', data)
     },
     openForm () {
       document.querySelector('.addPaymentForm__container').classList.add('act');
