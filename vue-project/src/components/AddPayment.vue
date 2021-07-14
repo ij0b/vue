@@ -1,28 +1,23 @@
 <template>
   <div class="addPaymentForm__container">
-    <div class="addPaymentForm__bg" @click="closeForm"></div>
+    <div v-if="formIsOpen == true" class="addPaymentForm__bg" @click="closeForm"></div>
     <div class="addPaymentForm__btn" @click="openForm">
       ADD NEW COST
       <span class="addPaymentForm__plus">
         +
       </span>
     </div>
-    <div class="addPaymentForm">
+    <div v-if="formIsOpen == true" class="addPaymentForm">
       <div class="addPaymentForm__closeForm" @click="closeForm">
         X
       </div>
       <div class="addPaymentForm__caption">
         Добавить новый расход
       </div>
-      <input class="addPaymentForm__field" placeholder="Date" v-model="date" />
-      <!--<input class="addPaymentForm__field" placeholder="Category" v-model="category" />-->
-      <select v-model="selected">
-        <option v-for="(option,idx) in getCategoryList" :value="option" :key="idx">
-          {{ option }}
-        </option>
-      </select>
-      <input class="addPaymentForm__field" placeholder="Value" v-model="value" />
-      <button class="addPaymentForm__add" @click="onSaveClick">
+      <input class="addPaymentForm__field" placeholder="date" v-model="date" />
+      <CategorySelect :categories="categories" @selectedCategory="selectedCategorys"/>
+      <input class="addPaymentForm__field" placeholder="value" v-model.number="value" />
+      <button class="addPaymentForm__add" @click="onClick">
         ADD
         <span class="addPaymentForm__plus">
         +
@@ -33,48 +28,57 @@
 </template>
  
 <script>
-import { mapMutations } from 'vuex'
+  import CategorySelect from "./CategorySelect.vue";
+  import { mapGetters} from 'vuex'
 
-export default {
-  data () {
-    return {
-      date: '',
-      category: '',
-      value: null,
-    }
-  },
-  computed: {
-    ...mapMutations([
-      'setPaymentsListData',
-    ]),
-    getCurrentDate () {
-      const today = new Date();
-      const d = today.getDate()
-      const m = today.getMonth() + 1
-      const y = today.getFullYear()
-      return `${d}.${m}.${y}`
-    }
-  },
-  methods: {
-    onSaveClick () {
-      const { category, value } = this
-      const data = {
-        date: this.date || this.getCurrentDate,
-        category,
-        value
-      }
-      //this.$emit('addNewPayment', data)
-      this.commit('setPaymentsListData', data)
+  export default {
+    name: "AddPayment",
+    components: {
+      CategorySelect
     },
-    openForm () {
-      document.querySelector('.addPaymentForm__container').classList.add('act');
+    data(){
+        return {
+            date: "",
+            category: "",
+            value: null,
+            formIsOpen: false,
+            selected: "",
+        }
     },
-    closeForm () {
-      document.querySelector('.addPaymentForm__container').classList.remove('act');
+    methods: {
+        onClick(){
+            const { category, value } = this;
+            const data = {
+                date: this.date || this.getCurrentDate,
+                category,
+                value
+            }
+            this.$emit('addNewPayment', data)
+			console.log("onClick()");
+        },
+        selectedCategorys(data){
+          this.category = data.selected; 
+        },
+        openForm () {
+          this.formIsOpen = true;
+        },
+        closeForm () {
+          this.formIsOpen = false;
+        }
+    },
+    computed: {
+        getCurrentDate() {
+            const today = new Date()
+            const d = today.getDate()
+            const m = today.getMonth() + 1
+            const y = today.getFullYear()
+            return `${d}.${m}.${y}`
+        },
+        ...mapGetters({
+          categories: 'getCategoryList'
+        }),
     }
   }
-
-}
 </script>
 
 <style scoped>
@@ -82,11 +86,8 @@ export default {
 .addPaymentForm__container{
 
 }
-.addPaymentForm__container.act .addPaymentForm__bg{
-  display:block;
-}
 .addPaymentForm__bg{
-  display:none;
+  display:block;
   position:fixed;
   top:0;
   left:0;
@@ -96,6 +97,7 @@ export default {
   z-index:20;
 }
 .addPaymentForm__btn{
+  cursor:pointer;
   background:#25A79A;
   padding:10px 15px;
   color:#fff;
@@ -107,7 +109,7 @@ export default {
   margin:0 0 0 15px;
 }
 .addPaymentForm{
-  display:none;
+  display:block;
   padding:25px;
   position:fixed;
   top:0;
@@ -122,10 +124,9 @@ export default {
   box-sizing:border-box;
   text-align:center;
 }
-.addPaymentForm__container.act .addPaymentForm{
-  display:block;
-}
+
 .addPaymentForm__add{
+  cursor:pointer;
   background:#25A79A;
   padding:10px 15px;
   color:#fff;
