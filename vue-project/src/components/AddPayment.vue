@@ -15,7 +15,7 @@
         Добавить новый расход
       </div>
       <input class="addPaymentForm__field" placeholder="date" v-model="date" />
-      <CategorySelect :categories="categories" @selectedCategory="selectedCategorys"/>
+      <CategorySelect :categories="categories" @selectedCategory="selectedCategorys" :pSelected = "selected.toLowerCase()" />
       <input class="addPaymentForm__field" placeholder="value" v-model.number="value" />
       <button class="addPaymentForm__add" @click="onClick">
         ADD
@@ -41,20 +41,22 @@
             date: "",
             category: "",
             value: null,
-            formIsOpen: false,
+			formIsOpen: false,
             selected: "",
         }
     },
     methods: {
         onClick(){
             const { category, value } = this;
-            const data = {
-                date: this.date || this.getCurrentDate,
-                category,
-                value
-            }
-            this.$emit('addNewPayment', data)
-			console.log("onClick()");
+			if(category.length && value != null){
+				const data = {
+					date: this.date || this.getCurrentDate,
+					category,
+					value
+				}
+				this.$emit('addNewPayment', data)
+				this.formIsOpen = false;
+			}
         },
         selectedCategorys(data){
           this.category = data.selected; 
@@ -75,9 +77,24 @@
             return `${d}.${m}.${y}`
         },
         ...mapGetters({
-          categories: 'getCategoryList'
+          categories: 'getCategoryList',
         }),
-    }
+    },
+	mounted(){
+		const category = this.$route.params.category;
+		const value = this.$route.query.value;
+		if(category !== undefined || value !== undefined){
+			this.formIsOpen = true;
+			if(category !== undefined){
+				this.category = category; 
+				this.selected = category;
+			}
+			if(value !== undefined){
+				this.value = value;
+			}
+		}
+		
+	},
   }
 </script>
 

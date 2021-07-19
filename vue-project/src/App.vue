@@ -3,21 +3,25 @@
     <header>
 		<h1 class="caption">My personal costs</h1>
 		<div class="menu">
-			<router-link to='/dashboard'>Dashboard</router-link> /
-			<router-link to='/about'>About</router-link> /
-			<button @click="goToThePageNotFound">Not Found</button>
-			<router-link to='/payment'>Payment</router-link> /
+			<div class="link__container">
+				<a class="link" href="/payment/Food?value=200">
+					Ссылка payment/Food?value=200 (т.к. и category и value заполнены, кнопка формы закрывает всплывающее окно, а также добавляет новую строку в таблицу)
+				</a>
+			</div>
+			<div class="link__container">
+				<a class="link" href="/payment/sport">
+					Ссылка payment/sport
+				</a>			
+			</div>
+			<div class="link__container">
+				<a class="link" href="/payment/?value=50 ">
+					Ссылка payment/?value=50 
+				</a>
+			</div>
 		</div>
     </header>
     <main>
-		<div class="content-page">
-			<router-view/>
-			<!-- <About v-if="page === 'about'"/>
-			<Dashboard v-if="page === 'dashboard'"/>
-			<NotFound v-if="page === 'notfound'"/> -->
-		</div>
-	
-		<AddPayment @addNewPayment="addData" />	
+		<AddPayment @addNewPayment="addData"/>
 		<div class="app__total">
 			Total: {{getFPV}}
 		</div>
@@ -52,12 +56,6 @@
 		addData(data){
 			this.addDataToPaymentsList(data)
 		}, 
-		goToThePageNotFound(){
-			// this.$router.push({name: "NotFound"})
-		},
-		setPage(){
-			console.log('location - ', location);
-		}
     },
     computed: {
       ...mapGetters({
@@ -75,11 +73,7 @@
       }
     },
 	mounted(){
-		console.log('location - ',location);
-		//if(location.pathname = '/add/payment/Food'){
-			//document.querySelector('.addPaymentForm__field').value = 1;
-		//}
-		//window.addEventListener('popstate', this.setPage)
+
 	}
 };
 </script>
@@ -89,5 +83,9 @@
 		font-size:20px;
 		font-weight:700;
 		margin:0 0 15px;
+	}
+	.link{
+		margin:0 0 15px;
+		display:inline-block;
 	}
 </style>

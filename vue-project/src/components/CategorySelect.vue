@@ -1,7 +1,7 @@
 <template>
   <div>
-      <select class="select" v-model="selected" @click="$emit('selectedCategory', {selected: selected})">
-          <option class="select__option" v-for="(option, idx) in categories" :key="idx" >
+      <select class="select" v-model="dSelected" @click="$emit('selectedCategory', {selected: dSelected})">
+          <option class="select__option" v-for="(option, idx) in categories" :key="idx" :value="option.toLowerCase()" >
               {{option}}
           </option>
       </select>
@@ -15,16 +15,25 @@ export default {
         categories: {
             type: Array,
             default: ()=>[]
-        }
+        },
+		pSelected: {
+            type: String,
+            default: ""
+        },
     },
     data(){
         return {
-            selected: ''
+            dSelected: ''
         }
     },
     methods: {
- 
-    }
+		
+    },
+	computed: {
+    },
+	mounted(){
+		this.dSelected = this.pSelected;
+	}
 }
 </script>
 
